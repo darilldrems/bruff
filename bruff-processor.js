@@ -1,11 +1,11 @@
 class bruffProcessor {
 
-    static processStringOrigin() {
-        
+    static processStringOrigin(context, origin) {
+
     }
 
     static processArrayOrigin() {
-
+        
     }
 
     static processObjectOrigin() {

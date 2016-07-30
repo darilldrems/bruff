@@ -11,6 +11,9 @@
   },
   "dependencies": {
     "express": "^4.14.0",
-    "mustache": "^2.2.1"
+    "immutable": "^3.8.1",
+    "mustache": "^2.2.1",
+    "q": "^1.4.1",
+    "request": "^2.74.0"
   }
 }

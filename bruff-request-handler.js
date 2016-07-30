@@ -6,6 +6,13 @@ var bruffRequestHandler = function (data) {
 
     return function (req, res, next) {
 
+         //if the instruction is a string then use forwarder
+         //to forward the exact request from the server
+        if (typeof instruction === 'string') {
+            //TODO just use the forwarder and return the exact response from origin server
+            
+        }         
+
         /**
          * cache instruction will be used for generating cache key
          * and time. response will not be cached

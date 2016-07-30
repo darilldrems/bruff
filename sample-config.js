@@ -37,5 +37,6 @@ module.exports = {
         }],
         responseFilter: function(globalRes){}
     },
-    "POST:/logout": "http://pwcstaging.com/logout"
+    "POST:/logout": "http://pwcstaging.com/logout",
+    "/identity/(%)": "http://identity.pwcstaging.com/{{context.client.req.params.0}}"
 }
