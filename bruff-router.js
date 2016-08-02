@@ -8,7 +8,7 @@ var expressRouter = new express.Router();
  */
 var bruffRequestHandler = require('./bruff-request-handler');
 
-var bruffRouter = function (maps) {
+var bruffRouter = function (setup) {
 
     /**
      * splits a map key "GET:/users/:id" into 
@@ -30,19 +30,25 @@ var bruffRouter = function (maps) {
     }
 
     /**
-     * loops through the map keys to set the paths
-     * and methods on express router to pass to the bruff request handler
+     * destination and base routes with instructions on 
+     * how to transfer, cache, filter responses from remote 
+     * server
      */
-    for (var path in maps) {
-        if (maps.hasOwnProperty(path)) {
-            var mapInstruction = splitIntoMethodAndPath(path);
-            if (mapInstruction.method === "GET") {
-                expressRouter.get(mapInstruction.path, bruffRequestHandler(maps[path]));
-            } else if (mapInstruction.method === "POST") {
-                expressRouter.post(mapInstruction.path, bruffRequestHandler(maps[path]));
-            } else {
-                expressRouter.get(mapInstruction.path, bruffRequestHandler(maps[path]));
-            }
+    var gateway = setup.gateway;
+
+    /**
+     * setup config such as cache time, cache contract
+     */
+    var config = setup.config;
+
+    for (var i = 0; i < gateway.length; i++) {
+        var baseMethodAndPath = splitIntoMethodAndPath(gateway[i].base);
+        if (baseMethodAndPath.method === "GET") {
+            expressRouter.get(baseMethodAndPath.path, bruffRequestHandler(gateway[i], config));
+        } else if (baseMethodAndPath.method === "POST") {
+            expressRouter.post(baseMethodAndPath.path, bruffRequestHandler(gateway[i], config));
+        } else {
+            expressRouter.all(baseMethodAndPath.path, bruffRequestHandler(gateway[i], config))
         }
     }
 

@@ -50,7 +50,16 @@ class RequestBuilder {
                 throw new Exception("Error occured in request builder for " + reqObject.uri);
             } else {
                 if (response.statusCode === 200) {
-                    deferred.resolve(response);
+                    //parse the response data
+                    var data = JSON.parse(response.body);
+                    //check if the json response contains status property
+                    //if it does check if it is success else reject the promise to 
+                    //indicate failure
+                    if (data.status !== undefined && data.status !== "success") {
+                        deferred.reject(response);
+                    } else {
+                        deferred.resolve(response);
+                    }
                 } else {
                     deferred.reject(response);
                 }
@@ -60,3 +69,5 @@ class RequestBuilder {
         return deferred.promise;
     }
 }
+
+module.exports = RequestBuilder;

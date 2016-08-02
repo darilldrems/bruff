@@ -1,23 +1,25 @@
-var bruffRequestHandler = function (data) {
+var BruffConfigValidator = require('./bruff-config-validator');
+
+var bruffRequestHandler = function (map, config) {
     /**
      * this represents the gateway mapping instruction
      */
-    var instruction = data;
+    var destination = map._to;
+    var config = config;
+    var toOrder = map.order;
+
+    var isCacheEnabled = config.cache !== undefined ? true : false;
+    var cacheTimeInSeconds = isCacheEnabled ? 0 : config.cache.time;
+    if (isCacheEnabled) {
+        var cacheClient = {
+            get: config.cache.get,
+            set: config.cache.set
+        };
+    }     
+
+    BruffConfigValidator.validate(destination, toOrder);
 
     return function (req, res, next) {
-
-         //if the instruction is a string then use forwarder
-         //to forward the exact request from the server
-        if (typeof instruction === 'string') {
-            //TODO just use the forwarder and return the exact response from origin server
-            
-        }         
-
-        /**
-         * cache instruction will be used for generating cache key
-         * and time. response will not be cached
-         */
-        var cacheInstruction = instruction.cache;
 
         /**
          * global object which will carry information about requests and response to be
@@ -27,39 +29,13 @@ var bruffRequestHandler = function (data) {
         
         context.client.req = req;
 
-        /**
-         * this represents the remote server endpoint client request should be forwarded to
-         * it can be string: "", object literal {} or array []
-         * if it is string the client request will be directly mapped to the server endpoint
-         * if it is object literal it will check customizations before sending to the server
-         * if it is [] the first element must be instruction on how to forward request either
-         * sequencially or parallel
-         */
-        var origin = instruction.origin;
-
-        //check if origin is truthy if not probably throw exception
-        if (origin) {
-            if (typeof origin === 'string') {
-                //TODO build the string value if it contains context template tags
-                //TODO: make the request to server 
-            }
-
-            if (typeof origin === 'object') {
-                //TODO treat origin as object, customize request and call server
-            }
-
-            if (Array.isArray(origin)) {
-                //TODO treat origin an array and perform action
-            }
-
+        //check if destination server is an array of servers to be called
+        //and responses merged if not do the single request to remote server
+        if (Array.isArray(destination)) {
+            
         } else {
-            //TODO: throw an exception here
+
         }
-
-        
-        
-       
-
     }
 };
 
