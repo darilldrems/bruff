@@ -47,7 +47,7 @@ class RequestBuilder {
 
         request(reqObject, function (error, response, body){
             if (error) {
-                throw new Exception("Error occured in request builder for " + reqObject.uri);
+                throw new Error("Error occured in request builder for " + reqObject.uri);
             } else {
                 if (response.statusCode === 200) {
                     //parse the response data
