@@ -44,25 +44,28 @@ class RequestBuilder {
         }
 
         var reqObject = this._requestObject;
-
+        delete reqObject.headers.host;
+        console.log("requestObject in builder"+JSON.stringify(reqObject));
         request(reqObject, function (error, response, body){
             if (error) {
-                throw new Error("Error occured in request builder for " + reqObject.uri);
+                throw new Error("Error occured in request builder for " + error);
             } else {
-                if (response.statusCode === 200) {
-                    //parse the response data
-                    var data = JSON.parse(response.body);
-                    //check if the json response contains status property
-                    //if it does check if it is success else reject the promise to 
-                    //indicate failure
-                    if (data.status !== undefined && data.status !== "success") {
-                        deferred.reject(response);
-                    } else {
-                        deferred.resolve(response);
-                    }
-                } else {
-                    deferred.reject(response);
-                }
+                console.log("request builder got: "+response.body);
+                deferred.resolve(response);
+                // if (response.statusCode === 200) {
+                //     //parse the response data
+                //     var data = JSON.parse(response.body);
+                //     //check if the json response contains status property
+                //     //if it does check if it is success else reject the promise to 
+                //     //indicate failure
+                //     if (data.status !== undefined && data.status !== "success") {
+                //         deferred.reject(response);
+                //     } else {
+                //         deferred.resolve(response);
+                //     }
+                // } else {
+                //     deferred.reject(response);
+                // }
             }
         });        
 

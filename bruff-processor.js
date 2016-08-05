@@ -55,6 +55,7 @@ class BruffProcessor {
 
         var requestObject = {};
         requestObject.headers = context.client.req.headers;
+
         //set request default values base on the method
         if (method === "GET") {
             requestObject.qs = context.client.req.query;
@@ -71,21 +72,32 @@ class BruffProcessor {
             //override the request object with values in require
             requestObject = xtend(requestObject, destRequirement);
         }
-        // context.responses = [];
-        console.log(destination.title+"::::"+JSON.stringify(requestObject));
-        console.log(destination.title+"::::"+JSON.stringify(context));
+
+        //set content-type
+        requestObject.headers['content-type'] = 'application/json; charset=utf-8';
+        requestObject.headers['accept'] = 'application/json';
+
+        if (destination['content-type']) {
+            requestObject.headers['content-type'] = destination['content-type'];
+            requestObject.headers['accept'] = destination['content-type'];
+        }
+
+        if (destination['accept-encoding']) {
+            requestObject.headers['accept-endcoding'] = destination['accept-encoding'];
+        }
+
+        console.log("after content-type:" + requestObject.headers['content-type']);
+        context.responses = [];
 
         new RequestBuilder(url, requestObject)
             .makeRequest(method)
             .then(function (resp) {
                 //attach the response to context
-                console.log(context.title+":::response:::"+resp.body);
-                // context.responses.push(JSON.parse(resp.body));
+                context.responses.push(JSON.parse(resp.body));
                 deferred.resolve(resp);
             })
             .catch(function (error) {
-                context.responses.push({});
-                deferred.reject(error);
+               throw new Error(error);
             });
 
         return deferred.promise;
@@ -102,12 +114,12 @@ class BruffProcessor {
      */
     static processOneToOne(destination, context) {
         var deferred = Q.defer();
-
         BruffProcessor
             ._doTask(destination, context)
             .then(function (resp){
                 return deferred.resolve(resp);
-            }, function (error) {
+            })
+            .catch(function (error){
                 return deferred.reject(error);
             });
                     
@@ -161,40 +173,25 @@ class BruffProcessor {
         var deferred = Q.defer();
 
         var result = Q();
-        var responses = [];
-
-        var objResponses = {};
-
-        context.responses = [];
+        var destResponses = {};
         var counter = 0;
+
         //run the requests to the servers sequentially
-        destinations.forEach(function (f) {
-            result = BruffProcessor._doTask(f, context)
-                        .then(function (resp) {
-                            console.log("iininnnnin");
-
-                            context.responses.push(JSON.parse(resp.body));
-                            objResponses[destinations[counter].title] = resp;
+        destinations.forEach(function (destination) {
+            result = result.then(function () {
+                return BruffProcessor._doTask(destination, context)
+                        .then(function (res) {
+                            destResponses[destinations[counter].title] = res;
                             counter++;
-                            return objResponses;
-                        }, function (error) {
-                            objResponses[destinations[counter].title] = error;
-                            counter++;
-                            return objResponses;
                         });
+            });
         });
 
-        result.then(function () {
-            
+        result.then(function (resp) {
+            return deferred.resolve(destResponses);
         });
-        // result.then(function (results) {
-        //     for (var i = 0; i < responses.length; i++) {
-        //         objResponses[destinations[i].title] = responses[i];
-        //     }
-        //     deferred.resolve(objResponses);
-        // });
 
-        return result;
+        return deferred.promise;
     }
 }
 

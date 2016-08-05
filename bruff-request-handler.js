@@ -1,4 +1,7 @@
 var BruffConfigValidator = require('./bruff-config-validator');
+var BruffProcessor = require('./bruff-processor');
+var buildResponse = require('./bruff-response-handler');
+var xtend = require('xtend');
 
 var bruffRequestHandler = function (map, config) {
     /**
@@ -9,7 +12,8 @@ var bruffRequestHandler = function (map, config) {
     var toOrder = map.order;
 
     var isCacheEnabled = config.cache !== undefined ? true : false;
-    var cacheTimeInSeconds = isCacheEnabled ? 0 : config.cache.time;
+    var cacheTimeInSeconds = isCacheEnabled ? config.cache.time : 0;
+
     if (isCacheEnabled) {
         var cacheClient = {
             get: config.cache.get,
@@ -19,7 +23,11 @@ var bruffRequestHandler = function (map, config) {
 
     BruffConfigValidator.validate(destination, toOrder);
 
-    return function (req, res, next) {
+    function errorFunc(err) {
+        throw new Error(err);
+    }
+
+    return function (req, res) {
 
         /**
          * global object which will carry information about requests and response to be
@@ -27,14 +35,45 @@ var bruffRequestHandler = function (map, config) {
          */
         var context = { client: {} }; //client represents the client making the request
         
-        context.client.req = req;
+        context.client.req = {
+            headers: xtend({}, req.headers),
+            query: xtend({}, req.query),
+            method: req.method,
+            body: req.body
+        };
+
+        var response;
 
         //check if destination server is an array of servers to be called
         //and responses merged if not do the single request to remote server
         if (Array.isArray(destination)) {
-            
+            if (toOrder && toOrder === 'sync') {
+                //process many requests to destination synchronously
+                BruffProcessor
+                    .processManySync(destination, context)
+                    .then(function (resp) {
+                        response = resp;
+                    })
+                    .catch(errorFunc);
+
+            } else {
+                //process many requests to destination servers asynchronously
+                BruffProcessor
+                    .processManyAsync(destination, context)
+                    .then(function (resp){
+                        response = resp;
+                    })
+                    .catch(errorFunc);
+            }
+
         } else {
 
+            BruffProcessor
+                .processOneToOne(destination, context)
+                .then(function (resp) {
+                    return res.status(resp.statusCode).json(JSON.parse(resp.body));
+                })
+                .catch(errorFunc);
         }
     }
 };
