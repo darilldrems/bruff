@@ -71,7 +71,11 @@ var bruffRequestHandler = function (map, config) {
             BruffProcessor
                 .processOneToOne(destination, context)
                 .then(function (resp) {
-                    return res.status(resp.statusCode).json(JSON.parse(resp.body));
+                    var respBody = res.body
+                    if (resp.statusCode !== 500) {
+                        respBody = JSON.parse(resp.body)
+                    }
+                    return res.status(resp.statusCode).json(respBody);
                 })
                 .catch(errorFunc);
         }
