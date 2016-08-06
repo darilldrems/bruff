@@ -3,31 +3,29 @@ An express API gateway inspired by netflix zuul
 ## What is Bruff
 
 Bruff is a simple Nodejs express middleware library that allows you to create an API gateway with a simple
-Javascript object literal configuration. It has the ability to route requests to multiple upstream server
-asynchronously and synchronously if dependency exist.
+Javascript object literal configuration. It has the ability to route requests to multiple upstream servers or endpoints
+asynchronously or synchronously if dependency exist.
 
-## Why did we build Bruff
+## Why did we built Bruff
 
 Our client applications (Web and Mobile) consume resources from different microservices in order to perform
 different operations. The mobile client particularly had performance issues due to the fact that it called multiple
 endpoints from different services to perform a user action and or got response data more than it needed which increased
-latency. To solve this problem we found ourselves building a new kind of middlewares called Backend For Frontend which will
-do all the hard work of calling multiple services, aggregating their responses and trimming out unneeded fields in the response
+latency. To solve this problem we found ourselves building middleware called Backend For Frontend (BFF) which will
+do all the work of calling multiple services, aggregating their responses and trimming out unneeded fields in the response
 for the client app. This approach increased the mobile client performance greatly. 
-A good example will be for a user to log in into our mobile app the app needs to get access token from a service, if it
-successfully gets the access token then it needs to call another service to get the bio information of the user whose access
-token was retrieved and then login. The BFF came in to provide the mobile client with one new endpoint called /login then the 
-BFF will do the work of calling /oauth endpoint and the /me endpoint to get the details.
 
-Because we realised we will be building a lot of middleware applications like this, we decided to enbark on the journey
+For example, when a user to logs in into our mobile app the app needs to get access token from a service, and then calls another service to get the profile data of the user. The BFF came in to provide the mobile client with one new endpoint called `/login` that abstracts this sequence of actions from the mobile app.
+
+Because we realised we will be building a lot of middleware applications like this, we decided to embark on the journey
 of looking for a framework for this and we found Netflix Zuul. The problem is we could not use Netflix zuul because 
 our engineering team could not support development in Java so we embarked on the journey of building a simple BFF framework
 in Nodejs.
 
 ## What can Bruff do for you?
 + Dynamic routing - Bruff can route single request, multiple dependent and multiple independent requests to different upstream servers
-+ It can allow you filter responses from upstream servers to specific responses needed by client applications.
-+ You can enable caching in Bruff express.
++ With it, you can filter and mutate responses from upstream servers to specific responses needed by client applications.
++ You can enable caching in Bruff express (under development).
 + Others - because Bruff in itself is an express middleware you can do other things such as authentication with 
 other express middlewares. You only need to call your middleware before calling bruff.
 
