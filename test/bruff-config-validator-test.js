@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var BruffConfigValidator = require('../bruff-config-validator');
+var BruffConfigValidator = require('../lib/bruff-config-validator');
 
 describe("BruffConfigValidator.validate()", function () {
 

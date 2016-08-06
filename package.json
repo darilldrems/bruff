@@ -1,6 +1,7 @@
 {
   "name": "buff-express",
   "version": "0.0.1",
+  "description": "An API gateway inspired by Netflix Zuul",
   "authors": [
     "Ridwan Olalere"
   ],
@@ -16,6 +17,7 @@
     "mustache": "^2.2.1",
     "q": "^1.4.1",
     "request": "^2.74.0",
+    "underscore": "^1.8.3",
     "xtend": "^4.0.1"
   }
 }

@@ -1,9 +1,9 @@
 var Q = require('q');
-var BruffProcessor = require('../bruff-processor');
+var BruffProcessor = require('../lib/bruff-processor');
 var expect = require('chai').expect;
 var assert = require('chai').assert;
 var util = require('util');
-const appConfig = require('../config');
+const appConfig = require('../lib/config');
 
 
 describe("BruffProcessor", function () {

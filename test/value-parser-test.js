@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var ValueParser = require('../value-parser');
+var ValueParser = require('../lib/value-parser');
 
 describe("ValueParser.parse()", function () {
     var context = {

@@ -1,5 +1,5 @@
 var assert = require('chai').assert;
-var bruffRouter = require('../bruff-router');
+var bruffRouter = require('../lib/bruff-router');
 
 describe("bruff-router", function () {
     it("It should contain passed values", function () {
