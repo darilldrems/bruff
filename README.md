@@ -58,7 +58,7 @@ module.exports = {
             }, {
                 url: "localhost:8787/me"
                 title: "me",
-                cacheKey: "{{client.res.0.access_token}}", //bruff knows to cache the response of this endpoint with access token from the response of the endpoint above
+                cacheKey: "{{client.responses.0.access_token}}", //bruff knows to cache the response of this endpoint with access token from the response of the endpoint above
                 requires: {
                     headers: {
                         Authorization: "Bearer {{responses.0.access_token}}" //bruff knows to send the request with header set to access token from response of the request above
