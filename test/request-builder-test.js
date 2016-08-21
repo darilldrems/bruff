@@ -1,4 +1,4 @@
-var RequestBuilder = require('../request-builder');
+var RequestBuilder = require('../lib/request-builder');
 var expect = require('chai').expect;
 
 describe("RequestBuilder()", function () {

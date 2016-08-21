@@ -1,5 +1,5 @@
 var assert = require('chai').assert;
-var BruffTemplateParser = require('../bruff-template-parser');
+var BruffTemplateParser = require('../lib/bruff-template-parser');
 
 describe("bruff-template-parser", function () {
 

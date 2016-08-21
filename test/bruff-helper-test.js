@@ -1,6 +1,6 @@
 var expect = require('chai').expect;
 
-var Helpers = require('../bruff-helpers');
+var Helpers = require('../lib/bruff-helpers');
 
 describe("Helper", function () {
     var context = {
