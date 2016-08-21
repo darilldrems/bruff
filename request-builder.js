@@ -46,7 +46,7 @@ class RequestBuilder {
         var reqObject = this._requestObject;
 
         /*
-        Fix for weird header errors
+        Fix for weird header errors.
         */
 
         //Not sure why. content-length seems to be the problem
