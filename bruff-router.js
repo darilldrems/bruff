@@ -23,7 +23,7 @@ var bruffRouter = function (setup) {
         var splitted = pathAndMethod.split(":");
         if (splitted.length > 1) {
             methodAndPath.method = splitted[0].toUpperCase();
-            methodAndPath.path = splitted[1];
+            methodAndPath.path = pathAndMethod.replace(splitted[0] + ':', '');
         }
 
         return methodAndPath;

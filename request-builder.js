@@ -45,6 +45,17 @@ class RequestBuilder {
 
         var reqObject = this._requestObject;
 
+        /*
+        Fix for weird header errors
+        */
+
+        //Not sure why. content-length seems to be the problem
+        delete reqObject.headers['content-length'];
+
+        /*
+        End Fix
+        */
+
         request(reqObject, function (error, response, body){
             if (error) {
                 throw new Error("Error occured in request builder for " + reqObject.uri);
