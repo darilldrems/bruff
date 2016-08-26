@@ -32,7 +32,7 @@ other express middlewares. You only need to call your middleware before calling 
 ### Getting started
 To get started with Bruff you need to install the bruff npm module
 ```
-npm install bruff-express --save
+npm install bruff --save
 ```
 
 Create a bruff configuration module which holds the information and instruction you have for bruff e.g gateway.js
