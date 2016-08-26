@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/darilldrems/bruff-express.svg?branch=master)](https://travis-ci.org/darilldrems/bruff-express)
+
 An express API gateway inspired by netflix zuul.
 
 ## What is Bruff
