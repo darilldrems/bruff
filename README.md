@@ -1,4 +1,4 @@
-An express API gateway inspired by netflix zuul
+An express API gateway inspired by netflix zuul.
 
 ## What is Bruff
 
