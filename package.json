@@ -21,6 +21,6 @@
     "xtend": "^4.0.1"
   },
   "scripts": {
-    "test": "mocha --timeout 35000"
+    "test": "mocha --timeout 60000"
   }
 }
