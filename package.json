@@ -1,0 +1,26 @@
+{
+  "name": "buff-express",
+  "version": "0.5.0",
+  "description": "An API gateway inspired by Netflix Zuul",
+  "authors": [
+    "Ridwan Olalere"
+  ],
+  "devDependencies": {
+    "body-parser": "^1.15.2",
+    "chai": "^3.5.0",
+    "mocha": "^2.5.3",
+    "supertest": "^2.0.0"
+  },
+  "dependencies": {
+    "express": "^4.14.0",
+    "immutable": "^3.8.1",
+    "mustache": "^2.2.1",
+    "q": "^1.4.1",
+    "request": "^2.74.0",
+    "underscore": "^1.8.3",
+    "xtend": "^4.0.1"
+  },
+  "scripts": {
+    "test": "mocha --timeout 60000"
+  }
+}
