@@ -32,6 +32,26 @@ describe("BruffRequestHandler", function () {
 
   });
 
+  it("Should successfully forward request to destination server using load balancing", function (done) {
+      var catTestMap = {
+          base: "/cat",
+          _to: {
+              url: [appConfig.test_server_host+"/categories", appConfig.test_server_host+"/categories"],
+              title: "categories",
+          }
+      };
+      app.get(catTestMap.base, bruffRequestHandler(catTestMap, {}));
+
+      request(app)
+          .get("/cat")
+          .set('Authorization', 'Bearer ' + appConfig.test_access_token)
+          .expect(function(resp) {
+              expect(resp.body.status).to.be.equal("success");
+          })
+          .expect(200, done);
+
+  });
+
   it("should successfully forward for multiple sync requests", function (done) {
     var loginTestMap = {
       base: "/login",
@@ -66,14 +86,13 @@ describe("BruffRequestHandler", function () {
     request(app)
       .post("/login")
       .send({
-        client_id: "577e5fe42989c31100b26f14",
-        client_secret: "diHopa8yFNDWofRNJIeREDmAV3HhL7bwr4umhlhPS0CgqIiOylA6Y9obfsV9VsbWBDuMUKE7MvVpIrtip4oX8zmG21I4QI1rhwjx",
-        username: "+2349098090424",
-        password: "jack2211989",
+        client_id: appConfig.test_client_id,
+        client_secret: appConfig.test_client_secret,
+        username: appConfig.test_username,
+        password: appConfig.test_password,
         grant_type: "password"
       })
       .expect(function (res) {
-        // console.log(JSON.stringify(res.body));
         expect(res.body).to.be.ok;
       })
       .expect(200, done);

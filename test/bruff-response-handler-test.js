@@ -9,9 +9,13 @@ describe("BruffResponseHandler", function () {
             var allResponseSuccessful = {class: {statusCode: 200, body:JSON.stringify({name: 'Ridwan'})},
                                              clazz: {statusCode: 200, body:JSON.stringify({balance: 200})}};
             var result = BruffResponseHandler.buildResponse(allResponseSuccessful);
+            console.log(result.body.class);
+            var c = JSON.parse(result.body.class);
+            var cz = JSON.parse(result.body.clazz);
+
             expect(result.status).to.be.eq(200);
-            expect(result.body.class.name).to.be.eq("Ridwan");
-            expect(result.body.clazz.balance).to.be.eq(200);
+            expect(c.name).to.be.eq("Ridwan");
+            expect(cz.balance).to.be.eq(200);
         });
 
         it("All failed with same error status expects same error status", function () {
@@ -35,9 +39,9 @@ describe("BruffResponseHandler", function () {
 
             var result = BruffResponseHandler.buildResponse(responses);
             expect(result.status).to.be.eq(206);
-            expect(result.body.class.name).to.be.eq('Rilo');
+            expect((JSON.parse(result.body.class)).name).to.be.eq('Rilo');
             expect(result.body.mine).to.be.eq("server error");
-            expect(result.body.clazz.message).to.be.eq('Not found');
+            expect((JSON.parse(result.body.clazz)).message).to.be.eq('Not found');
         });
 
         it("All failed with different status codes", function () {
@@ -47,8 +51,8 @@ describe("BruffResponseHandler", function () {
             }
             var result = BruffResponseHandler.buildResponse(responses);
             expect(result.status).to.be.eq(424);
-            expect(result.body.class.message).to.be.eq('Not found');
-            expect(result.body.clazz.message).to.be.eq('UnAuthorized');
+            expect((JSON.parse(result.body.class)).message).to.be.eq('Not found');
+            expect((JSON.parse(result.body.clazz)).message).to.be.eq('UnAuthorized');
         });
 
     });

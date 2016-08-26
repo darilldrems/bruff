@@ -68,24 +68,54 @@ describe("BruffProcessor", function () {
                 }
             }
         };
-        
+
         it("POST request should be mapped successfully to GET", function (done) {
             BruffProcessor
                 .processOneToOne(_to, context)
                 .then(function (resp){
-                    var json = JSON.parse(resp.body);
+                    var json = resp.body;
                     expect(json.status).to.be.eq('success');
-                    assert(json.data).isDefined();
+                    expect(json.data).to.be.ok;
                     done();
                 })
                 .catch(function (error){
-                    console.log(JSON.stringify(error));
+                    console.log(error);
+                    done();
+                });
+        });
+
+        it("response should be trimmed using response filter", function (done) {
+          var _to = {
+              url: appConfig.test_server_host+'/categories',
+              title: "",
+              cacheKey: "",
+              method: "GET",
+              requires: {
+                  headers: {
+                      "authorization": "{{client.req.body.access_token}}"
+                  }
+              },
+              after: [resp => {
+                delete resp.body.data;
+              }]
+          };
+
+            BruffProcessor
+                .processOneToOne(_to, context)
+                .then(function (resp){
+                    var json = resp.body;
+                    expect(json.status).to.be.eq('success');
+                    expect(json.data).is.not.ok;
+                    done();
+                })
+                .catch(function (error){
+                    console.log(error);
                     done();
                 });
         });
 
         it("Process POST to POST succesfully with data transfer", function (done) {
-            delete context.client.req.headers;
+            context.client.req.headers = {};
             context.client.req.method = "POST";
             context.client.req.body = {
                 client_id: appConfig.test_client_id,
@@ -96,7 +126,7 @@ describe("BruffProcessor", function () {
 
             var _to = {
                 url: appConfig.test_server_host+'/login',
-                title: "login",
+                title: "login"
             }
 
             BruffProcessor
@@ -132,7 +162,7 @@ describe("BruffProcessor", function () {
             }
         }
 
-        
+
 
         it("Process multiple asyncronously with failed req", function (done) {
             var _tos = [{
@@ -148,7 +178,7 @@ describe("BruffProcessor", function () {
             BruffProcessor
                 .processManyAsync(_tos, context)
                 .then(function (res) {
-                    var catResp = JSON.parse(res.categories.body);
+                    var catResp = res.categories.body;
                     expect(catResp.status).to.be.eq("success");
                     expect(res.banks.statusCode).to.be.eq(404);
                     done();
@@ -257,7 +287,10 @@ describe("BruffProcessor", function () {
                                     password: appConfig.test_password,
                                     grant_type: "password"
                                 },
-                            method: "POST"
+                            method: "POST",
+                            headers: {
+
+                            }
                         }
                     }
                 }
@@ -283,6 +316,8 @@ describe("BruffProcessor", function () {
                         expect(res.me.statusCode).to.be.eq(200);
                         expect(res.oauth.statusCode).to.be.eq(200);
                         done();
+                    }, function (err) {
+                      console.log("in err");
                     });
 
             });
