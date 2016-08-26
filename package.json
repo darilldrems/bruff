@@ -1,6 +1,6 @@
 {
   "name": "bruff",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "description": "An API gateway inspired by Netflix Zuul",
   "authors": [
     "Ridwan Olalere"
