@@ -1,5 +1,5 @@
 {
-  "name": "buff-express",
+  "name": "bruff",
   "version": "0.5.4",
   "description": "An API gateway inspired by Netflix Zuul",
   "authors": [
